@@ -31,6 +31,6 @@
             android:value="2" />
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
-            android:value="ica" />
+            android:value="ica,barcode,smart_reply" />
     </application>
 </manifest>

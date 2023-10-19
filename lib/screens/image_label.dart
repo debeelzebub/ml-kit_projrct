@@ -7,6 +7,7 @@ import 'package:projectfirebase/data/data_source.dart';
 import 'package:projectfirebase/data/listclass.dart';
 import 'package:projectfirebase/screens/detectdata.dart';
 import 'package:projectfirebase/screens/labeldata.dart';
+import 'package:projectfirebase/screens/smart_reply.dart';
 import 'package:projectfirebase/widget/button_upload.dart';
 import 'package:projectfirebase/widget/functionbutton.dart';
 import 'package:projectfirebase/widget/page1.dart';
@@ -48,9 +49,12 @@ class _ImageLabelingState extends State<ImageLabeling> {
             Column(         //2nd page
               children: [
                 const SizedBox(height: 10,),
-                MyButton(onTap: ()async{
+                MyButton(
+                  title: "Another Image",
+                  onTap: ()async{
                   list=[];
-                  imageFile = await data.uploadImage(); 
+                  showbottomsheet(context);
+                  // imageFile = await data.uploadImage("gallery"); 
                   setState(() {
                     isColor=false;
                     isColor1=false;
@@ -58,7 +62,18 @@ class _ImageLabelingState extends State<ImageLabeling> {
                 }),
                 const SizedBox(height: 5,),
                 const Divider(color: Color.fromARGB(19, 0, 0, 0),thickness: 1.5,),
-                MyImage(imageFile: imageFile!),
+
+                MyImage(imageFile: imageFile!,
+                onTap:()async{
+                  list=[];
+                  list=await data.getbarcode(imageFile!);
+                  imlabel=true;
+                  setState(() {
+                    isColor=false;
+                    isColor1=false;
+                  });
+                } ,),
+
                 const SizedBox(height: 20,),
                 Text("choose a function",
                   style: GoogleFonts.poppins(
@@ -75,6 +90,7 @@ class _ImageLabelingState extends State<ImageLabeling> {
                         isColor:isColor,
                         onTap:()async{
                           list=await data.getImagelabel(imageFile!);
+                          // list=await data.getbarcode(imageFile!);
                           setState(() {
                           isColor=true;
                           isColor1=false;
@@ -103,16 +119,19 @@ class _ImageLabelingState extends State<ImageLabeling> {
                 Column(
                   children: [
                     Padding(
-                      padding: const EdgeInsets.only(top: 10,right: 20,left: 20),
+                      padding: const EdgeInsets.only(top: 10,right: 20,left: 20,bottom: 10),
                       child:SizedBox(
-                        height:MediaQuery.of(context).size.height,
+                        // height:MediaQuery.of(context).size.height/2,
+                      
                         child: ListView.builder(
                           physics: const NeverScrollableScrollPhysics(),
                           itemCount: list.length,
+                          shrinkWrap: true,
                           itemBuilder: (context,index){
                             return isColor==true?
-                            MyLabel(label:"${list[index].text}"):
-                            MyDetectdata(label: "${list[index].text}", confi: "${list[index].confi}");
+                            MyLabel(label:"${list[index].text}",isSelect: false,): isColor1==true?
+                            MyDetectdata(label: "${list[index].text}", confi: "${list[index].confi}"):
+                            MyLabel(label: "${list[index].text}", isSelect:true);
                           }
                         ),
                       )
@@ -128,18 +147,47 @@ class _ImageLabelingState extends State<ImageLabeling> {
                       const FrontPage(),
                       const SizedBox(height: 20,),
                       MyButton(
-                        onTap: ()async{
-                        imageFile = await data.uploadImage(); 
-                        setState(() {});
-                      }),
+                        title: "Take a Photo ",
+                        onTap: ()=>showbottomsheet(context)
+                      ),
                       const SizedBox(height: 20,),
-                      Text("No image selected",style: GoogleFonts.poppins(textStyle:const TextStyle(fontWeight: FontWeight.w300)),)
+                      Text("No image selected",style: GoogleFonts.poppins(textStyle:const TextStyle(fontWeight: FontWeight.w300)),),
+                      const SizedBox(height: 20,),
+                      MyButton(onTap: (){
+                        Navigator.push(context, MaterialPageRoute(builder: (context)=>const MySmartReply()));}, 
+                      title: "Smart Reply")
                     ],
                   )
                 ),
         ),
       ),
     );
- 
+  }
+  showbottomsheet(context){
+    showModalBottomSheet(context: context, 
+    builder: (BuildContext bc){
+      return  Column(mainAxisSize: MainAxisSize.min,
+        children: [
+          ListTile(
+            onTap: ()async{
+              imageFile = await data.uploadImage("gallery"); 
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            leading:const Icon(Icons.photo,color: Color(0xFF0073E6)),
+            title: Text("Gallery",style: GoogleFonts.inter(textStyle:const TextStyle(color:  Colors.black)),),
+          ),
+          ListTile(
+            onTap: ()async{
+              imageFile = await data.uploadImage("camera"); 
+              Navigator.of(context).pop();
+              setState(() {});
+            },
+            leading:const Icon(Icons.camera,color: Color(0xFF0073E6),),
+            title: Text("Camera",style: GoogleFonts.inter(textStyle:const TextStyle(color:  Colors.black)),),
+          ),
+        ],
+      );
+    });
   }
 }

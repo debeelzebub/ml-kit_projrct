@@ -4,12 +4,13 @@ import 'package:google_fonts/google_fonts.dart';
 // ignore: must_be_immutable
 class MyLabel extends StatelessWidget {
   String label;
-  MyLabel({super.key,required this.label});
+  bool isSelect;
+  MyLabel({super.key,required this.label,required this.isSelect});
 
   @override
   Widget build(BuildContext context) {
     return Card(
-      child: Container(
+      child:isSelect==false? Container(
              color: const Color(0xFFF8F8F8),
             height:50,
             child: Row(
@@ -17,7 +18,12 @@ class MyLabel extends StatelessWidget {
                 const SizedBox(width:20,),
                 Text(label,style: GoogleFonts.inter(textStyle: const TextStyle(fontSize: 18,fontWeight: FontWeight.w600)),softWrap: true,),
               ],
-            )),
+            )
+            ):
+            Column(children: [
+               Text(label,style: GoogleFonts.inter(textStyle: const TextStyle(fontSize:13,fontWeight: FontWeight.w600)),softWrap: true,),
+             
+            ],),
     );
  
   }

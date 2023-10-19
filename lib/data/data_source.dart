@@ -1,24 +1,33 @@
 // import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
+// ignore_for_file: avoid_print, unused_local_variable
+
+import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
 import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
 import 'package:google_mlkit_object_detection/google_mlkit_object_detection.dart';
+import 'package:google_mlkit_smart_reply/google_mlkit_smart_reply.dart';
+import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:projectfirebase/data/listclass.dart';
 class ImageDataSource{
-  Future uploadImage() async{
+
+String result="";
+
+  Future uploadImage(String s) async{
     final img= ImagePicker();
     XFile? image;
-   image= await img.pickImage(source: ImageSource.gallery,
+   image= await img.pickImage(source:s=='gallery'? ImageSource.gallery:ImageSource.camera,
    maxHeight: 900,
-   maxWidth: 1000);
+   maxWidth: 1000,  
+   );
    if(image?.path!=null){
-   // ignore: unused_local_variable
    final String filename = path.basename(image!.path);
    return image;
    }
   //  imageFile = image.path;  
   }
-String result="";
+
+
    Future<List<Product>> getobjectdetect(XFile imageFile) async{
     List<Product> list=[];
     final inputImage = InputImage.fromFilePath(imageFile.path);
@@ -40,11 +49,12 @@ String result="";
     list.add(Product(text: text, confi: confidence.toStringAsFixed(2)));
     result += "Category: $text\n$rect\nTrackinId: $trackingId\nConfidence: ${confidence.toStringAsFixed(2)}\nIndex: $index";
       detector.close();
-    
-}
- }
+        
+    }
+    }
    return list;
    }
+
   Future<List<Product>> getImagelabel(XFile imageFile) async{
     List<Product> list=[];
     final inputImage = InputImage.fromFilePath(imageFile.path);
@@ -61,6 +71,75 @@ String result="";
   return list.toList(); 
   }
  
+   Future<List<Product>> getbarcode(XFile imageFile) async{
+    List<Product> list=[];
+    final inputImage = InputImage.fromFilePath(imageFile.path);
+    final List<BarcodeFormat> formate=[BarcodeFormat.all];
+    final barcodescanner = BarcodeScanner( formats: formate);
+    final List<Barcode> code = await barcodescanner.processImage(inputImage);
+    for (Barcode barcode in code) {
+     final type = barcode.type;
+    //  final  boundingBox = barcode.boundingBox;
+      final String? displayValue = barcode.displayValue;
+      // final String? rawValue = barcode.rawValue;
 
+  // See API reference for complete list of supported types
+  switch (type) {
+    case BarcodeType.wifi:
+      final barcodeWifi = barcode.value as BarcodeWifi;
+      print("r:$barcodeWifi");
+      break;
+    case BarcodeType.url:
+      final barcodeUrl = barcode.value as BarcodeUrl;
+      print("r:$barcodeUrl");
+      break;
+    default:
+      break;
+  }
+  list.add(Product(text: displayValue));
+  }
+  barcodescanner.close();
+  return list.toList(); 
+  }
+   
+   Future getsmartreply(String msg) async{
+    List reply=[];
+    String result1="";
+    final SmartReply smartreply =SmartReply();
+    smartreply.addMessageToConversationFromLocalUser(msg, DateTime.now().microsecondsSinceEpoch);
+    final response= await smartreply.suggestReplies();
+    for (final suggestReplies in response.suggestions) {
+    String text = suggestReplies;
+    reply.add(text);
+    result1+= "| $text |";
+   
+    // list.add(Product(text: text));
+  }
+   print(reply);
+  smartreply.close();
+  return reply; 
+  }
+
+
+  Future texttranslate(String msg) async{
+    String result="";
+    final modelManager = OnDeviceTranslatorModelManager();
+    final bool response = await modelManager.isModelDownloaded(TranslateLanguage.hindi.bcpCode);
+    if(response==false){
+    final bool response1 = await modelManager.downloadModel(TranslateLanguage.hindi.bcpCode);
+    }else{
+      print("Already downloaded");
+    }
+    // ignore: non_constant_identifier_names
+    final Ondevicetranslator = OnDeviceTranslator(sourceLanguage:TranslateLanguage.english,targetLanguage:TranslateLanguage.hindi);
+        final String text= await Ondevicetranslator.translateText(msg);
+        result+=text;
+        print(result);
+        Ondevicetranslator.close();
+    final bool response3 = await modelManager.deleteModel(TranslateLanguage.malay.bcpCode);
+    // final TranslateLanguage sourceLanguage;
+    // final TranslateLanguage targetLanguage;
+   return result; 
+  }
 
   }
