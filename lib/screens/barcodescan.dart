@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
-// ignore: unused_import
-import 'package:path/path.dart' as path;
+import 'package:image_picker/image_picker.dart';
 import 'package:projectfirebase/data/data_source.dart';
 import 'package:projectfirebase/data/listclass.dart';
 import 'package:projectfirebase/widget/button_upload.dart';
@@ -11,30 +9,24 @@ import 'package:projectfirebase/widget/labeldata.dart';
 import 'package:projectfirebase/widget/page1.dart';
 import 'package:projectfirebase/widget/viewimage.dart';
 
-class ImageLabeling extends StatefulWidget {
-  const ImageLabeling({super.key});
+class BarcodeScani extends StatefulWidget {
+  const BarcodeScani({super.key});
 
   @override
-  State<ImageLabeling> createState() => _ImageLabelingState();
+  State<BarcodeScani> createState() => _BarcodeScaniState();
 }
 
-class _ImageLabelingState extends State<ImageLabeling> {
-   XFile? imageFile;
+class _BarcodeScaniState extends State<BarcodeScani> {
+  XFile? imageFile;
     ImageDataSource data = ImageDataSource();
     String result = "";
     bool imlabel=false;
     bool isColor=false;
     bool isColor1=false;
     List<Product>list=[];
-    
-  @override
-  void initState() {
-    super.initState();
-     
-  }
   @override
   Widget build(BuildContext context) {
-    double w=MediaQuery.of(context).size.width;
+  double w=MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize:const Size.fromHeight(70),
@@ -54,14 +46,14 @@ class _ImageLabelingState extends State<ImageLabeling> {
             automaticallyImplyLeading: false,
             backgroundColor:const Color(0xFFF8F7F5),
             title: GestureDetector(
-              onTap: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ImageLabeling() )),
+              onTap: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const BarcodeScani() )),
               child: Center(child: Image.asset("assets/image/Group30797.png",width:w/2.5 ,))),
           ),
         ),
       ),
-      body: SizedBox(
-        height: MediaQuery.of(context).size.height,
-        child: SingleChildScrollView(
+      body:  SingleChildScrollView(
+        child: SizedBox(
+          height: MediaQuery.of(context).size.height,
           child: imageFile!=null?
             Column(         //2nd page
               children: [
@@ -79,34 +71,29 @@ class _ImageLabelingState extends State<ImageLabeling> {
                 }),
                 const SizedBox(height: 5,),
                 const Divider(color: Color.fromARGB(19, 0, 0, 0),thickness: 1.5,),
-
+      
                 MyImage(imageFile: imageFile!),
                 const Divider(),
                 const SizedBox(height: 5,),
-
-                // const SizedBox(height: 15,),
-                // Text("choose a function",
-                //   style: GoogleFonts.poppins(
-                //     textStyle:const TextStyle(fontSize: 14)
-                //   ),
-                // ),
                 SizedBox(
-                  height: 58,
-                  width: w/1.84,
+                  height: 60,
+                  width: w/2,
                   child: FunctionButton(
-                    text:"Image Label",
-                    isSelect: true,
-                    isColor:isColor,
+                    text: "Barcode Scanning",
+                    isSelect: false,
+                    isColor2: isColor1,
                     onTap:()async{
-                      list=await data.getImagelabel(imageFile!);
+                      list=[];
+                     list=await data.getbarcode(imageFile!);
                       setState(() {
-                      isColor=true;
-                      isColor1=false;
+                      isColor1=true;
+                      isColor=false;
                       imlabel=true;
                       });
-                    } ,
+                    },
                   ),
                 ),
+              const SizedBox(height: 5,),
                 imlabel==true?                // when get data
                 Padding(
                   padding: const EdgeInsets.only(top: 10,right: 20,left: 20),
@@ -116,8 +103,9 @@ class _ImageLabelingState extends State<ImageLabeling> {
                     shrinkWrap: true,
                     itemBuilder: (context,index){
                       return 
-                      MyLabel(label:"${list[index].text}",isSelect: false,);
+                      MyLabel(label: "${list[index].text}", isSelect:true);
                     }
+                      
                   )
                 ):const SizedBox()
               ],

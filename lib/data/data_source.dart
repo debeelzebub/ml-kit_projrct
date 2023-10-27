@@ -9,6 +9,8 @@ import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:projectfirebase/data/listclass.dart';
+
+
 class ImageDataSource{
 
 String result="";
@@ -49,7 +51,7 @@ String result="";
     list.add(Product(text: text, confi: confidence.toStringAsFixed(2)));
     result += "Category: $text\n$rect\nTrackinId: $trackingId\nConfidence: ${confidence.toStringAsFixed(2)}\nIndex: $index";
       detector.close();
-        
+       print(result); 
     }
     }
    return list;
@@ -58,7 +60,7 @@ String result="";
   Future<List<Product>> getImagelabel(XFile imageFile) async{
     List<Product> list=[];
     final inputImage = InputImage.fromFilePath(imageFile.path);
-    ImageLabeler imageLabeler=ImageLabeler(options: ImageLabelerOptions());
+    ImageLabeler imageLabeler=ImageLabeler(options: ImageLabelerOptions(confidenceThreshold: 0.5));
     final List<ImageLabel> labels = await imageLabeler.processImage(inputImage);
     for (ImageLabel label in labels) {
     String text = label.label;
@@ -121,9 +123,11 @@ String result="";
   }
 
 
-  Future texttranslate(String msg) async{
+  Future texttranslate(String msg,dynamic lang) async{
     String result="";
+    // TranslateLanguage language=lang; 
     final modelManager = OnDeviceTranslatorModelManager();
+    if(lang=='Hindi'){
     final bool response = await modelManager.isModelDownloaded(TranslateLanguage.hindi.bcpCode);
     if(response==false){
     final bool response1 = await modelManager.downloadModel(TranslateLanguage.hindi.bcpCode);
@@ -134,9 +138,55 @@ String result="";
     final Ondevicetranslator = OnDeviceTranslator(sourceLanguage:TranslateLanguage.english,targetLanguage:TranslateLanguage.hindi);
         final String text= await Ondevicetranslator.translateText(msg);
         result+=text;
-        print(result);
         Ondevicetranslator.close();
-    final bool response3 = await modelManager.deleteModel(TranslateLanguage.malay.bcpCode);
+    // final bool response3 = await modelManager.deleteModel(TranslateLanguage.hindi.bcpCode);
+    }
+
+    else if(lang=='Tamil')
+    {
+    final bool response = await modelManager.isModelDownloaded(TranslateLanguage.tamil.bcpCode);
+    if(response==false){
+    final bool response1 = await modelManager.downloadModel(TranslateLanguage.tamil.bcpCode);
+    }else{
+      print("Already downloaded");
+    }
+    // ignore: non_constant_identifier_names
+    final Ondevicetranslator = OnDeviceTranslator(sourceLanguage:TranslateLanguage.english,targetLanguage:TranslateLanguage.tamil);
+        final String text= await Ondevicetranslator.translateText(msg);
+        result+=text;
+        Ondevicetranslator.close();
+    // final bool response3 = await modelManager.deleteModel(TranslateLanguage.tamil.bcpCode);
+    }
+    else if(lang=='Japanese')
+    {
+    final bool response = await modelManager.isModelDownloaded(TranslateLanguage.japanese.bcpCode);
+    if(response==false){
+    final bool response1 = await modelManager.downloadModel(TranslateLanguage.japanese.bcpCode);
+    }else{
+      print("Already downloaded");
+    }
+    // ignore: non_constant_identifier_names
+    final Ondevicetranslator = OnDeviceTranslator(sourceLanguage:TranslateLanguage.english,targetLanguage:TranslateLanguage.japanese);
+        final String text= await Ondevicetranslator.translateText(msg);
+        result+=text;
+        Ondevicetranslator.close();
+    // final bool response3 = await modelManager.deleteModel(TranslateLanguage.japanese.bcpCode);
+    }
+    else 
+    {
+    final bool response = await modelManager.isModelDownloaded(TranslateLanguage.german.bcpCode);
+    if(response==false){
+    final bool response1 = await modelManager.downloadModel(TranslateLanguage.german.bcpCode);
+    }else{
+      print("Already downloaded");
+    }
+    // ignore: non_constant_identifier_names
+    final Ondevicetranslator = OnDeviceTranslator(sourceLanguage:TranslateLanguage.english,targetLanguage:TranslateLanguage.german);
+        final String text= await Ondevicetranslator.translateText(msg);
+        result+=text;
+        Ondevicetranslator.close();
+    // final bool response3 = await modelManager.deleteModel(TranslateLanguage.german.bcpCode);
+    }
     // final TranslateLanguage sourceLanguage;
     // final TranslateLanguage targetLanguage;
    return result; 

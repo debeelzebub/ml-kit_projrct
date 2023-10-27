@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:projectfirebase/data/data_source.dart';
-// import 'package:projectfirebase/widget/button_upload.dart';
 
 class MySmartReply extends StatefulWidget {
   const MySmartReply({super.key});
@@ -11,20 +10,18 @@ class MySmartReply extends StatefulWidget {
 
 class _MySmartReplyState extends State<MySmartReply> {
    ImageDataSource data= ImageDataSource();
-
     List reply=[];
-    String result="";
     bool val=false;
-    bool show=false;
-   final _tcon=TextEditingController();
+    final _tcon=TextEditingController();
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        automaticallyImplyLeading: false,
          toolbarHeight: 70,
         backgroundColor:const Color.fromARGB(255, 235, 235, 235),
-        title:const Text("Smart Reply"),
+        title:const Center(child:  Text("Smart Reply")),
       ),
       body: SingleChildScrollView(
         child: Padding(
@@ -32,6 +29,9 @@ class _MySmartReplyState extends State<MySmartReply> {
           child: Column(
             children: [
               TextFormField(
+                keyboardType: TextInputType.multiline,
+                minLines: 1,
+                maxLines: 5,
                 controller: _tcon,
                 decoration:const InputDecoration(
                   focusedBorder: OutlineInputBorder(
@@ -42,46 +42,30 @@ class _MySmartReplyState extends State<MySmartReply> {
                   ),
                   border: OutlineInputBorder(
                     borderSide: BorderSide(color: Color(0xFF0073E6))
+                  ),
+                  hintText: "Write Here"
                   )
                 ),
-              ),
               const SizedBox(height: 20,),
-              Row(
-                children: [
-                  Expanded(
-                    child:ElevatedButton(onPressed: ()async{
-                      result="";
-                      reply= await data.getsmartreply(_tcon.text);
-                      val=true;
-                      show=false;
-                      setState(() {
-                        
-                      });
-                    }, 
-                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.blue)),
-                    child:const Text("submit",style: TextStyle(color: Colors.white),))
-                  ),
-                  SizedBox(width: 10,),
-                  Expanded(
-                    child: ElevatedButton(onPressed: ()async{
-                      result="";
-                      result= await data.texttranslate(_tcon.text);
-                      val=true;
-                      show=true;
-                      setState(() {
-                        
-                      });
-                    },
-                    style: ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.blue)),
-                     child: Text("Translate",style: TextStyle(color: Colors.white),))
-                  ),
-                ],
-              ),
+              ElevatedButton(onPressed: ()async{
+                reply= await data.getsmartreply(_tcon.text);
+                val=true;
+                _tcon.clear();
+                setState(() {
+                  
+                });
+              }, 
+              style:const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.blue),
+              padding: MaterialStatePropertyAll(EdgeInsets.symmetric(horizontal: 50,
+              vertical: 13))),
+              child:const Text("submit",style: TextStyle(color: Colors.white,fontSize:18),)),
+              const SizedBox(width: 10,),
+             
               const SizedBox(height: 10,),
               val==true?
               SizedBox(
                 height: MediaQuery.of(context).size.height/8,
-                child:show==false? ListView.builder(
+                child:ListView.builder(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
                   itemCount: reply.length,
@@ -95,8 +79,8 @@ class _MySmartReplyState extends State<MySmartReply> {
                       child: Center(child: Text("${reply[index]}",style:const TextStyle(fontSize: 20),)),
                     ),
                   );
-                }):SizedBox(child: Text(result,style: TextStyle(fontSize: 20),),)
-              ):SizedBox(),
+                })
+              ):const SizedBox(),
             ],
           ),
         ),

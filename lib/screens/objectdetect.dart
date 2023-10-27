@@ -1,25 +1,23 @@
 import 'package:flutter/material.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:google_fonts/google_fonts.dart';
-// ignore: unused_import
-import 'package:path/path.dart' as path;
+import 'package:image_picker/image_picker.dart';
 import 'package:projectfirebase/data/data_source.dart';
 import 'package:projectfirebase/data/listclass.dart';
 import 'package:projectfirebase/widget/button_upload.dart';
+import 'package:projectfirebase/widget/detectdata.dart';
 import 'package:projectfirebase/widget/functionbutton.dart';
-import 'package:projectfirebase/widget/labeldata.dart';
 import 'package:projectfirebase/widget/page1.dart';
 import 'package:projectfirebase/widget/viewimage.dart';
 
-class ImageLabeling extends StatefulWidget {
-  const ImageLabeling({super.key});
+class ObjectDectecting extends StatefulWidget {
+  const ObjectDectecting({super.key});
 
   @override
-  State<ImageLabeling> createState() => _ImageLabelingState();
+  State<ObjectDectecting> createState() => _ObjectDectectingState();
 }
 
-class _ImageLabelingState extends State<ImageLabeling> {
-   XFile? imageFile;
+class _ObjectDectectingState extends State<ObjectDectecting> {
+  XFile? imageFile;
     ImageDataSource data = ImageDataSource();
     String result = "";
     bool imlabel=false;
@@ -54,7 +52,7 @@ class _ImageLabelingState extends State<ImageLabeling> {
             automaticallyImplyLeading: false,
             backgroundColor:const Color(0xFFF8F7F5),
             title: GestureDetector(
-              onTap: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ImageLabeling() )),
+              onTap: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ObjectDectecting() )),
               child: Center(child: Image.asset("assets/image/Group30797.png",width:w/2.5 ,))),
           ),
         ),
@@ -83,30 +81,24 @@ class _ImageLabelingState extends State<ImageLabeling> {
                 MyImage(imageFile: imageFile!),
                 const Divider(),
                 const SizedBox(height: 5,),
-
-                // const SizedBox(height: 15,),
-                // Text("choose a function",
-                //   style: GoogleFonts.poppins(
-                //     textStyle:const TextStyle(fontSize: 14)
-                //   ),
-                // ),
                 SizedBox(
-                  height: 58,
-                  width: w/1.84,
+                  height: 60,
+                  width: w/2,
                   child: FunctionButton(
-                    text:"Image Label",
-                    isSelect: true,
-                    isColor:isColor,
+                    text: "Object Detect",
+                    isSelect: false,
+                    isColor2: isColor1,
                     onTap:()async{
-                      list=await data.getImagelabel(imageFile!);
+                     list=await data.getobjectdetect(imageFile!);
                       setState(() {
-                      isColor=true;
-                      isColor1=false;
+                      isColor1=true;
+                      isColor=false;
                       imlabel=true;
                       });
-                    } ,
+                    },
                   ),
                 ),
+              const SizedBox(height: 5,),
                 imlabel==true?                // when get data
                 Padding(
                   padding: const EdgeInsets.only(top: 10,right: 20,left: 20),
@@ -116,8 +108,9 @@ class _ImageLabelingState extends State<ImageLabeling> {
                     shrinkWrap: true,
                     itemBuilder: (context,index){
                       return 
-                      MyLabel(label:"${list[index].text}",isSelect: false,);
+                      MyDetectdata(label: "${list[index].text}", confi: "${list[index].confi}");
                     }
+                      
                   )
                 ):const SizedBox()
               ],
@@ -139,8 +132,10 @@ class _ImageLabelingState extends State<ImageLabeling> {
                 ),
         ),
       ),
+
     );
   }
+
   showbottomsheet(context){
     showModalBottomSheet(context: context, 
     builder: (BuildContext bc){

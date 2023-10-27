@@ -32,5 +32,8 @@
         <meta-data
             android:name="com.google.mlkit.vision.DEPENDENCIES"
             android:value="ica,barcode,smart_reply" />
+        <meta-data
+            android:name="firebase_inapp_messaging_auto_data_collection_enabled"
+            android:value="false" />
     </application>
 </manifest>
