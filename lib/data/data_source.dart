@@ -15,6 +15,8 @@ class ImageDataSource{
 
 String result="";
 
+//----------- Upload Image-------------
+
   Future uploadImage(String s) async{
     final img= ImagePicker();
     XFile? image;
@@ -29,6 +31,7 @@ String result="";
   //  imageFile = image.path;  
   }
 
+//---------- object detection---------------
 
    Future<List<Product>> getobjectdetect(XFile imageFile) async{
     List<Product> list=[];
@@ -57,6 +60,8 @@ String result="";
    return list;
    }
 
+//--------- image Label ------------
+
   Future<List<Product>> getImagelabel(XFile imageFile) async{
     List<Product> list=[];
     final inputImage = InputImage.fromFilePath(imageFile.path);
@@ -73,6 +78,8 @@ String result="";
   return list.toList(); 
   }
  
+//-------------------barcode scanning-----------------------
+
    Future<List<Product>> getbarcode(XFile imageFile) async{
     List<Product> list=[];
     final inputImage = InputImage.fromFilePath(imageFile.path);
@@ -103,6 +110,8 @@ String result="";
   barcodescanner.close();
   return list.toList(); 
   }
+
+  //----------------------smartreply----------------------------
    
    Future getsmartreply(String msg) async{
     List reply=[];
@@ -122,6 +131,7 @@ String result="";
   return reply; 
   }
 
+//-----------------Translation-----------------
 
   Future texttranslate(String msg,dynamic lang) async{
     String result="";
