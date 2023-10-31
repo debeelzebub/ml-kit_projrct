@@ -3,6 +3,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:projectfirebase/widget/homecoyright.dart';
 import 'package:projectfirebase/widget/homegrid.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 
 class MyHomeai extends StatefulWidget {
   const MyHomeai({super.key});
@@ -39,7 +40,7 @@ class _MyHomeaiState extends State<MyHomeai> {
                  Builder(builder: (BuildContext context) {
              return IconButton(onPressed: (){
               Scaffold.of(context).openDrawer();
-             }, icon:const Icon(Icons.menu,color: Colors.black,size: 30,));
+             }, icon: SvgPicture.asset("assets/icons/dash.svg"));
            }),
                 Image.asset("assets/image/Group30810.png",width:73,height: 28,),
               ],

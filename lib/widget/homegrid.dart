@@ -28,7 +28,12 @@ class HomeGrid extends StatelessWidget {
      itemBuilder: (context, index) {
        
      return 
-      HomeGridCard(color:list[index].color,icon:list[index].icon,text:"${list[index].text}",
+      HomeGridCard(
+        color:list[index].color,
+        icon:list[index].icon,
+        text:"${list[index].text}",
+        svg: "${list[index].svg}",
+        icons: list[index].icons,
       onTap: () {
         switch(index){
           case 0:

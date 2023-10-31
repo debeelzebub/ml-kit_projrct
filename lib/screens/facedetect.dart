@@ -4,7 +4,6 @@ import 'package:image_picker/image_picker.dart';
 import 'package:projectfirebase/data/data_source.dart';
 import 'package:projectfirebase/data/listclass.dart';
 import 'package:projectfirebase/widget/button_upload.dart';
-import 'package:projectfirebase/widget/detectdata.dart';
 import 'package:projectfirebase/widget/facedetectdata.dart';
 import 'package:projectfirebase/widget/functionbutton.dart';
 import 'package:projectfirebase/widget/page1.dart';
