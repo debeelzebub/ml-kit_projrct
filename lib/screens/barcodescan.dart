@@ -47,7 +47,7 @@ class _BarcodeScaniState extends State<BarcodeScani> {
             backgroundColor:const Color(0xFFF8F7F5),
             title: GestureDetector(
               onTap: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const BarcodeScani() )),
-              child: Center(child: Image.asset("assets/image/Group30797.png",width:w/2.5 ,))),
+              child: Center(child:Text("Barcode Scanning",style: GoogleFonts.inter(textStyle:const TextStyle(fontWeight: FontWeight.w600)),))),
           ),
         ),
       ),

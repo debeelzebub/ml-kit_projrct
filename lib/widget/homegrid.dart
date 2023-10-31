@@ -1,10 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:projectfirebase/data/gridlist.dart';
 import 'package:projectfirebase/screens/barcodescan.dart';
+import 'package:projectfirebase/screens/digital_ink.dart';
+import 'package:projectfirebase/screens/facedetect.dart';
 import 'package:projectfirebase/screens/image_label.dart';
+import 'package:projectfirebase/screens/languageid.dart';
 import 'package:projectfirebase/screens/languagetranslation.dart';
 import 'package:projectfirebase/screens/objectdetect.dart';
 import 'package:projectfirebase/screens/smart_reply.dart';
+import 'package:projectfirebase/screens/textrecognition.dart';
 import 'package:projectfirebase/widget/homegridcard.dart';
 
 class HomeGrid extends StatelessWidget {
@@ -37,7 +41,7 @@ class HomeGrid extends StatelessWidget {
               Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ImageLabeling()));
               break;
           case 3:
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ImageLabeling()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const MyFaceDetect()));
               break;
           case 4:
               Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ObjectDectecting()));
@@ -46,13 +50,13 @@ class HomeGrid extends StatelessWidget {
               Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const MySmartReply()));
               break;
           case 6:
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ImageLabeling()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const TextRecognition()));
               break;
           case 7:
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ImageLabeling()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const SignatureCanvas()));
               break;
           case 8:
-              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const ImageLabeling()));
+              Navigator.of(context).push(MaterialPageRoute(builder: (context)=>const LanguageDetector()));
               break;          
           default:
               break;

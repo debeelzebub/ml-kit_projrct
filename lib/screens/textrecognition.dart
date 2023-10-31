@@ -2,37 +2,34 @@ import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:projectfirebase/data/data_source.dart';
-import 'package:projectfirebase/data/listclass.dart';
 import 'package:projectfirebase/widget/button_upload.dart';
-import 'package:projectfirebase/widget/detectdata.dart';
 import 'package:projectfirebase/widget/functionbutton.dart';
 import 'package:projectfirebase/widget/page1.dart';
 import 'package:projectfirebase/widget/viewimage.dart';
 
-class ObjectDectecting extends StatefulWidget {
-  const ObjectDectecting({super.key});
+class TextRecognition extends StatefulWidget {
+  const TextRecognition({super.key});
 
   @override
-  State<ObjectDectecting> createState() => _ObjectDectectingState();
+  State<TextRecognition> createState() => _TextRecognitionState();
 }
 
-class _ObjectDectectingState extends State<ObjectDectecting> {
+class _TextRecognitionState extends State<TextRecognition> {
   XFile? imageFile;
+
     ImageDataSource data = ImageDataSource();
+
     String result = "";
+
     bool imlabel=false;
+
     bool isColor=false;
+
     bool isColor1=false;
-    List<Product>list=[];
-    
-  @override
-  void initState() {
-    super.initState();
-     
-  }
+
   @override
   Widget build(BuildContext context) {
-    double w=MediaQuery.of(context).size.width;
+  double w=MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize:const Size.fromHeight(70),
@@ -52,8 +49,8 @@ class _ObjectDectectingState extends State<ObjectDectecting> {
             automaticallyImplyLeading: false,
             backgroundColor:const Color(0xFFF8F7F5),
             title: GestureDetector(
-              onTap: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ObjectDectecting() )),
-              child: Center(child:Text("Object Detection",style: GoogleFonts.inter(textStyle:const TextStyle(fontWeight: FontWeight.w600)),))),
+              onTap: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const TextRecognition() )),
+              child: Center(child:Text("Text Recognition",style: GoogleFonts.inter(textStyle:const TextStyle(fontWeight: FontWeight.w600)),))),
           ),
         ),
       ),
@@ -67,7 +64,7 @@ class _ObjectDectectingState extends State<ObjectDectecting> {
                 MyButton(
                   title: "Upload Image",
                   onTap: ()async{
-                  list=[];
+                  result="";
                   showbottomsheet(context);
                   // imageFile = await data.uploadImage("gallery"); 
                   setState(() {
@@ -81,36 +78,56 @@ class _ObjectDectectingState extends State<ObjectDectecting> {
                 MyImage(imageFile: imageFile!),
                 const Divider(),
                 const SizedBox(height: 5,),
+
+                // const SizedBox(height: 15,),
+                // Text("choose a function",
+                //   style: GoogleFonts.poppins(
+                //     textStyle:const TextStyle(fontSize: 14)
+                //   ),
+                // ),
                 SizedBox(
-                  height: 60,
-                  width: w/2,
+                  height: 58,
+                  width: w/1.84,
                   child: FunctionButton(
-                    text: "Object Detect",
-                    isSelect: false,
-                    isColor2: isColor1,
+                    text:"Detect Text",
+                    isSelect: true,
+                    isColor:isColor,
                     onTap:()async{
-                     list=await data.getobjectdetect(imageFile!);
+                      result=await data.detectText(imageFile!);
                       setState(() {
-                      isColor1=true;
-                      isColor=false;
+                      isColor=true;
+                      isColor1=false;
                       imlabel=true;
                       });
-                    },
+                    } ,
                   ),
                 ),
-              const SizedBox(height: 5,),
                 imlabel==true?                // when get data
                 Padding(
                   padding: const EdgeInsets.only(top: 10,right: 20,left: 20),
-                  child:ListView.builder(
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemCount: list.length,
-                    shrinkWrap: true,
-                    itemBuilder: (context,index){
-                      return 
-                      MyDetectdata(label: "${list[index].text}", confi: "${list[index].confi}");
-                    }
-                      
+                  child:Container(
+                    decoration: ShapeDecoration(
+                      color:const Color(0xFFF9F9F9),
+                      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                      shadows:const [
+                        BoxShadow(
+                          color: Color(0x3F000000),
+                          blurRadius: 1,
+                          offset: Offset(0, 0),
+                          spreadRadius: 0,
+                        )
+                      ],
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.all(10),
+                      child: Text(result,
+                      style: GoogleFonts.inter(
+                        textStyle: const TextStyle(fontSize:14,
+                        fontWeight: FontWeight.w600)
+                      ),
+                      softWrap: true,
+                    ),
+                    ),
                   )
                 ):const SizedBox()
               ],
@@ -132,10 +149,8 @@ class _ObjectDectectingState extends State<ObjectDectecting> {
                 ),
         ),
       ),
-
     );
   }
-
   showbottomsheet(context){
     showModalBottomSheet(context: context, 
     builder: (BuildContext bc){

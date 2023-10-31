@@ -70,77 +70,42 @@ class _MyTranslationState extends State<MyTranslation> {
         ),
 
               const SizedBox(height: 20,),
-              Row(
+              Row( 
                 children: [
-                  FunctionButton(text: "Translate", isSelect: true, 
-                  onTap: ()async{
-                    result="";
-                    result= await data.texttranslate(_tcon.text,dropdownValue);
-                    setState(() {
-                      isColor=true;
-                        isColor1=false;
-                      if(result.isNotEmpty){
-                        
-                         val=true;
-                      }
-                    });
-                  },
-                  isColor:isColor ,),
+                  Expanded(
+                    child: FunctionButton(text: "Translate", isSelect: true, 
+                    onTap: ()async{
+                      result="";
+                      result= await data.texttranslate(_tcon.text,dropdownValue);
+                      setState(() {
+                        isColor=true;
+                          isColor1=false;
+                        if(result.isNotEmpty){
+                          
+                           val=true;
+                        }
+                      });
+                    },
+                    isColor:isColor ,),
+                  ),
                   const SizedBox(width: 7,),
-                      FunctionButton(
-                        text: "Clear Text",
-                        isSelect: false,
-                        isColor2: isColor1,
-                        onTap:()async{
-                         _tcon.clear();
-                          setState(() {
-                          isColor1=true;
-                          isColor=false;
-                          val=false;
-                          });
-                        },
+                      Expanded(
+                        child: FunctionButton(
+                          text: "Clear Text",
+                          isSelect: false,
+                          isColor2: isColor1,
+                          onTap:()async{
+                           _tcon.clear();
+                            setState(() {
+                            isColor1=true;
+                            isColor=false;
+                            val=false;
+                            });
+                          },
+                        ),
                       ),
                 ],
               ),
-
-              // Row(
-              //   children: [
-              //     Expanded(
-              //       child: ElevatedButton(onPressed: ()async{
-              //         result="";
-              //         result= await data.texttranslate(_tcon.text,dropdownValue);
-              //         setState(() {
-              //           if(result.isNotEmpty){
-              //           val=true;
-              //           }
-              //         });
-              //       },
-              //       style:const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.blue),
-              //       padding: MaterialStatePropertyAll(EdgeInsets.symmetric(
-              //         horizontal: 55,
-              //         vertical: 14
-              //       ))),
-              //        child:const Text("Translate",style: TextStyle(color: Colors.white),)
-              //        ),
-              //     ),
-              //     Expanded(
-              //       child: ElevatedButton(onPressed: ()async{
-              //         result="";
-              //         _tcon.clear();
-              //         setState(() {
-              //           val=false;
-              //         });
-              //       },
-              //       style:const ButtonStyle(backgroundColor: MaterialStatePropertyAll(Colors.blue),
-              //       padding: MaterialStatePropertyAll(EdgeInsets.symmetric(
-              //         horizontal: 55,
-              //         vertical: 14
-              //       ))),
-              //        child:const Text("Clear Text",style: TextStyle(color: Colors.white),)
-              //        ),
-              //     ),
-              //   ],
-              // ),
               const SizedBox(height: 10,),
               val==true?
               SizedBox(child: Card(

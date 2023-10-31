@@ -10,7 +10,7 @@ class Gridlist{
 List<Gridlist> list=[
   Gridlist(color: const Color(0xFF4485FD), icon: const Icon(Icons.join_left,color: Colors.white,size: 38,),text:"Barcode Scanning"),
   Gridlist(color: const Color(0xFFA584FF), icon: const Icon(Icons.shutter_speed_outlined,color: Colors.white,size: 38,),text:"Device Translation"),
-  Gridlist(color: const Color(0xFFFF7854), icon: const Icon(Icons.photo_library_outlined,color: Colors.white,size: 38,),text:"Image Detection"),
+  Gridlist(color: const Color(0xFFFF7854), icon: const Icon(Icons.photo_library_outlined,color: Colors.white,size: 38,),text:"Image Labelling"),
   Gridlist(color: const Color(0xFFFDA625), icon: const Icon(Icons.add_reaction_outlined,color: Colors.white,size: 38,),text:"Face Detection"),
   Gridlist(color: const Color(0xFF00CC6A), icon: const Icon(Icons.photo_size_select_large_sharp,color: Colors.white,size: 38,),text:"Object Detection"),
   Gridlist(color: const Color(0xFF00C9E4), icon: const Icon(Icons.add_to_photos_outlined,color: Colors.white,size: 38,),text:"Smart Reply"),

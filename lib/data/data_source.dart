@@ -1,14 +1,9 @@
-// import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
-// ignore_for_file: avoid_print, unused_local_variable
+// ignore_for_file: unused_local_variable
 
-import 'package:google_mlkit_barcode_scanning/google_mlkit_barcode_scanning.dart';
-import 'package:google_mlkit_image_labeling/google_mlkit_image_labeling.dart';
-import 'package:google_mlkit_object_detection/google_mlkit_object_detection.dart';
-import 'package:google_mlkit_smart_reply/google_mlkit_smart_reply.dart';
-import 'package:google_mlkit_translation/google_mlkit_translation.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:path/path.dart' as path;
 import 'package:projectfirebase/data/listclass.dart';
+import 'package:google_ml_kit/google_ml_kit.dart';
 
 
 class ImageDataSource{
@@ -31,7 +26,7 @@ String result="";
   //  imageFile = image.path;  
   }
 
-//---------- object detection---------------
+// 1. ---------- object detection---------------
 
    Future<List<Product>> getobjectdetect(XFile imageFile) async{
     List<Product> list=[];
@@ -60,7 +55,7 @@ String result="";
    return list;
    }
 
-//--------- image Label ------------
+// 2. --------- image Label ------------
 
   Future<List<Product>> getImagelabel(XFile imageFile) async{
     List<Product> list=[];
@@ -78,7 +73,7 @@ String result="";
   return list.toList(); 
   }
  
-//-------------------barcode scanning-----------------------
+// 3. -------------------barcode scanning-----------------------
 
    Future<List<Product>> getbarcode(XFile imageFile) async{
     List<Product> list=[];
@@ -111,7 +106,7 @@ String result="";
   return list.toList(); 
   }
 
-  //----------------------smartreply----------------------------
+  // 4. ----------------------smartreply----------------------------
    
    Future getsmartreply(String msg) async{
     List reply=[];
@@ -131,7 +126,7 @@ String result="";
   return reply; 
   }
 
-//-----------------Translation-----------------
+// 5. -----------------Translation-----------------
 
   Future texttranslate(String msg,dynamic lang) async{
     String result="";
@@ -202,4 +197,142 @@ String result="";
    return result; 
   }
 
+  // 6. ------------ digital ink -------------
+
+    Future recogniseText(language, ink) async {
+    final digitalInkRecognizer = DigitalInkRecognizer(languageCode: 'en');
+    String recognizedText = '';
+    // final String language = 'en';
+    // final Ink ink = Ink();
+    final modelManager = DigitalInkRecognizerModelManager();
+    final bool response = await modelManager.downloadModel(language);
+    final candidates = await digitalInkRecognizer.recognize(ink);
+    recognizedText = '';
+    for (final candidate in candidates) {
+      recognizedText += '\n${candidate.text}';
+    }
+    return recognizedText;
   }
+
+  //. --------------------language id -----------------
+
+   Future<List<Product>> detectLanguage(String text) async {
+    String result = '';
+    String result1 = '';
+    List<Product> list = [];
+    final languageIdentifier = LanguageIdentifier(confidenceThreshold: 0.5);
+
+    final List<IdentifiedLanguage> possibleLanguages =
+        await languageIdentifier.identifyPossibleLanguages(text);
+
+    for (IdentifiedLanguage identify in possibleLanguages) {
+      String language = identify.languageTag;
+      var confidence = identify.confidence;
+      // result += '$language';
+      // result1 += '$confidence';
+print(language);
+      switch (language) {
+        case 'en':
+          {
+            result = 'en(English)';
+            result1 = confidence.toStringAsFixed(2);
+            //list.add(Data(result: 'en(English)', result1: '$confidence'));
+          }
+          break;
+        case 'ja-Latn':
+          {
+            result = 'ja(Japanade)';
+            result1 = confidence.toStringAsFixed(2);
+            //list.add(Data(result: 'ja(Japanade)', result1: '$confidence'));
+          }
+          break;
+        case 'zh-Latn':
+          {
+            result = 'ch(Chinese)';
+            result1 = confidence.toStringAsFixed(2);
+            
+          }
+          break;
+        case 'ko':
+          {
+            result = 'ko(Korean)';
+            result1 = confidence.toStringAsFixed(2);
+    
+          }
+          case 'und':
+          {
+            result = 'Undefined';
+            result1 = confidence.toStringAsFixed(2);
+    
+          }
+          case 'hi-Latn':
+          {
+            result = 'hi(Hindi)';
+            result1 = confidence.toStringAsFixed(2);
+    
+          }
+      }
+      list.add(Product(text: result, confi: result1));
+    }
+    return list;
+  }
+
+  // 8. ------------Text Recognition------------------
+
+  Future detectText(XFile imageFile) async {
+  String text="";
+    final textRecognizer = TextRecognizer(script: TextRecognitionScript.latin);
+
+    final inputImage = InputImage.fromFilePath(imageFile.path);
+
+    final RecognizedText recognizedText =
+        await textRecognizer.processImage(inputImage);
+
+    for (TextBlock block in recognizedText.blocks) {
+        text += "${block.text}";
+    }
+    textRecognizer.close();
+    return text;
+  }
+
+  // 9.-----------------------Face Detect----------------------
+
+  Future<List<Product>> detectFace(XFile image) async {
+  bool isFaceDetected = false;
+  String headRotationX = '';
+  String headRotationY = '';
+  bool isSmiling = false;
+  List<Product> list=[];
+    final inputImage = InputImage.fromFilePath(image.path);
+
+    final faceDetector = FaceDetector(
+        options: FaceDetectorOptions(
+      enableClassification: true,
+      enableLandmarks: true,
+      enableContours: true,
+      enableTracking: true,
+    ));
+    final List<Face> faces = await faceDetector.processImage(inputImage);
+    if (faces.isNotEmpty) {
+      isFaceDetected = true;
+    for (Face face in faces) {
+      final double? rotX =
+          face.headEulerAngleX; // Head is tilted up and down rotX degrees
+      final double? rotY =
+          face.headEulerAngleY; // Head is rotated to the right rotY degrees
+        headRotationX = rotX.toString();
+        headRotationY = rotY.toString();
+      double? smileProb;
+      if (face.smilingProbability != null) {
+        smileProb = face.smilingProbability;
+
+        if (smileProb! > 0.5) {
+            isSmiling = true;
+        }
+      }
+    }
+  }
+  list.add(Product(text: headRotationX,confi: headRotationY,face: isFaceDetected,smile: isSmiling));
+  return list;
+  }
+}

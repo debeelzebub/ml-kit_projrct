@@ -5,18 +5,22 @@ import 'package:projectfirebase/data/data_source.dart';
 import 'package:projectfirebase/data/listclass.dart';
 import 'package:projectfirebase/widget/button_upload.dart';
 import 'package:projectfirebase/widget/detectdata.dart';
+import 'package:projectfirebase/widget/facedetectdata.dart';
 import 'package:projectfirebase/widget/functionbutton.dart';
 import 'package:projectfirebase/widget/page1.dart';
 import 'package:projectfirebase/widget/viewimage.dart';
 
-class ObjectDectecting extends StatefulWidget {
-  const ObjectDectecting({super.key});
+// ignore: must_be_immutable
+class MyFaceDetect extends StatefulWidget {
+  
+ const MyFaceDetect({super.key});
 
   @override
-  State<ObjectDectecting> createState() => _ObjectDectectingState();
+  State<MyFaceDetect> createState() => _MyFaceDetectState();
 }
 
-class _ObjectDectectingState extends State<ObjectDectecting> {
+class _MyFaceDetectState extends State<MyFaceDetect> {
+
   XFile? imageFile;
     ImageDataSource data = ImageDataSource();
     String result = "";
@@ -24,15 +28,9 @@ class _ObjectDectectingState extends State<ObjectDectecting> {
     bool isColor=false;
     bool isColor1=false;
     List<Product>list=[];
-    
-  @override
-  void initState() {
-    super.initState();
-     
-  }
   @override
   Widget build(BuildContext context) {
-    double w=MediaQuery.of(context).size.width;
+    double w = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: PreferredSize(
         preferredSize:const Size.fromHeight(70),
@@ -52,8 +50,8 @@ class _ObjectDectectingState extends State<ObjectDectecting> {
             automaticallyImplyLeading: false,
             backgroundColor:const Color(0xFFF8F7F5),
             title: GestureDetector(
-              onTap: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const ObjectDectecting() )),
-              child: Center(child:Text("Object Detection",style: GoogleFonts.inter(textStyle:const TextStyle(fontWeight: FontWeight.w600)),))),
+              onTap: ()=> Navigator.pushReplacement(context, MaterialPageRoute(builder: (context)=>const MyFaceDetect() )),
+              child: Center(child:Text("Face Detection",style: GoogleFonts.inter(textStyle:const TextStyle(fontWeight: FontWeight.w600)),))),
           ),
         ),
       ),
@@ -89,7 +87,7 @@ class _ObjectDectectingState extends State<ObjectDectecting> {
                     isSelect: false,
                     isColor2: isColor1,
                     onTap:()async{
-                     list=await data.getobjectdetect(imageFile!);
+                     list=await data.detectFace(imageFile!);
                       setState(() {
                       isColor1=true;
                       isColor=false;
@@ -108,7 +106,7 @@ class _ObjectDectectingState extends State<ObjectDectecting> {
                     shrinkWrap: true,
                     itemBuilder: (context,index){
                       return 
-                      MyDetectdata(label: "${list[index].text}", confi: "${list[index].confi}");
+                      DetectFaceData(face: list[index].face, smile: list[index].smile, headRotationX: "${list[index].text}", headRotationY: "${list[index].confi}");
                     }
                       
                   )
@@ -132,10 +130,8 @@ class _ObjectDectectingState extends State<ObjectDectecting> {
                 ),
         ),
       ),
-
     );
   }
-
   showbottomsheet(context){
     showModalBottomSheet(context: context, 
     builder: (BuildContext bc){
